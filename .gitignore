@@ -15,3 +15,7 @@ __pycache__/
 .idea/
 .vscode/
 .DS_Store
+
+# Entregables del documento (se entregan aparte, no van al repo)
+*.docx
+*.pdf
