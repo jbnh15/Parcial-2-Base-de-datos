@@ -1,3 +1,5 @@
+"""Consultas de grafo: recomendaciones, camino más corto, vecindad y popularidad."""
+
 from typing import Any
 
 from db.neo4j_client import run_query
@@ -62,7 +64,9 @@ def camino_mas_corto(desde_id: str, hasta_id: str) -> dict[str, Any]:
         hasta=hasta_id,
     )
     if not filas:
-        raise NotFoundError(f"No hay camino de hasta {MAX_SALTOS_CAMINO} saltos entre esas personas")
+        raise NotFoundError(
+            f"No hay camino de hasta {MAX_SALTOS_CAMINO} saltos entre esas personas"
+        )
     return filas[0]
 
 
@@ -81,6 +85,7 @@ def vecindad(persona_id: str) -> list[dict[str, Any]]:
 
 
 def mas_conectadas(limite: int) -> list[dict[str, Any]]:
+    """Personas ordenadas por número de amigos."""
     return run_query(
         """
         MATCH (p:Persona)

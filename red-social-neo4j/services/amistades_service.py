@@ -1,3 +1,5 @@
+"""Lógica y Cypher de amistades. AMIGO_DE se guarda en un sentido y se consulta sin dirección."""
+
 from typing import Any
 
 from db.neo4j_client import run_query
@@ -6,6 +8,7 @@ from services.errors import ConflictError, NotFoundError
 
 
 def listar_amigos(persona_id: str) -> list[dict[str, Any]]:
+    """Amigos de una persona con la fecha de amistad."""
     existe = run_query("MATCH (p:Persona {id: $id}) RETURN p.id AS id", id=persona_id)
     if not existe:
         raise NotFoundError(f"No existe la persona {persona_id}")
@@ -21,6 +24,7 @@ def listar_amigos(persona_id: str) -> list[dict[str, Any]]:
 
 def crear(datos: AmistadIn) -> dict[str, Any]:
     # MERGE sin dirección: si ya existe en cualquier sentido no se duplica
+    """Crea la amistad con MERGE sin dirección, para no duplicarla si ya existe al revés."""
     filas = run_query(
         """
         MATCH (a:Persona {id: $a}), (b:Persona {id: $b})
@@ -43,6 +47,7 @@ def crear(datos: AmistadIn) -> dict[str, Any]:
 
 
 def eliminar(persona_a_id: str, persona_b_id: str) -> None:
+    """Borra la amistad sin importar en qué sentido se guardó."""
     filas = run_query(
         """
         MATCH (:Persona {id: $a})-[r:AMIGO_DE]-(:Persona {id: $b})

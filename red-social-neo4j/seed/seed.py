@@ -1,10 +1,15 @@
-"""Crea constraints y carga datos de EJEMPLO (personas ficticias inventadas para la demo).
+"""Aplica el esquema (schema.cypher) y carga datos de EJEMPLO (personas ficticias inventadas).
 
 Es idempotente: usa MERGE con ids fijos, así que se puede correr varias veces sin duplicar.
+Ojo: al repetirlo vuelve a escribir nombre, edad y ciudad de las personas p01 a p14.
 Uso: python -m seed.seed
 """
 
+from pathlib import Path
+
 from db.neo4j_client import get_driver, run_query
+
+RUTA_ESQUEMA = Path(__file__).with_name("schema.cypher")
 
 # id, nombre, edad, ciudad, intereses
 PERSONAS = [
@@ -35,11 +40,17 @@ AMISTADES = [
 ]  # fmt: skip
 
 
+def leer_esquema() -> list[str]:
+    """Devuelve las sentencias de schema.cypher, sin comentarios ni vacías."""
+    texto = RUTA_ESQUEMA.read_text(encoding="utf-8")
+    lineas = [l for l in texto.splitlines() if not l.startswith("//")]
+    return [s.strip() for s in "\n".join(lineas).split(";") if s.strip()]
+
+
 def cargar() -> None:
-    run_query("CREATE CONSTRAINT persona_id IF NOT EXISTS FOR (p:Persona) REQUIRE p.id IS UNIQUE")
-    run_query(
-        "CREATE CONSTRAINT interes_nombre IF NOT EXISTS FOR (i:Interes) REQUIRE i.nombre IS UNIQUE"
-    )
+    """Crea las restricciones y hace MERGE de personas, intereses y amistades de ejemplo."""
+    for sentencia in leer_esquema():
+        run_query(sentencia)
     run_query(
         """
         UNWIND $personas AS fila

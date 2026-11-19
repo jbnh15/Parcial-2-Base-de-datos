@@ -1,3 +1,5 @@
+"""Lógica y Cypher de personas e intereses."""
+
 from typing import Any
 
 from db.neo4j_client import run_query
@@ -13,11 +15,13 @@ RETURN p{.*, intereses: intereses} AS persona
 
 
 def listar() -> list[dict[str, Any]]:
+    """Todas las personas con la lista de sus intereses."""
     filas = run_query("MATCH (p:Persona)" + _CON_INTERESES)
     return [f["persona"] for f in filas]
 
 
 def obtener(persona_id: str) -> dict[str, Any]:
+    """Una persona con sus intereses. Lanza NotFoundError si no existe."""
     filas = run_query("MATCH (p:Persona {id: $id})" + _CON_INTERESES, id=persona_id)
     if not filas:
         raise NotFoundError(f"No existe la persona {persona_id}")
@@ -25,6 +29,7 @@ def obtener(persona_id: str) -> dict[str, Any]:
 
 
 def crear(datos: PersonaIn) -> dict[str, Any]:
+    """Crea la persona y hace MERGE de sus intereses para compartir un solo nodo por interés."""
     filas = run_query(
         """
         CREATE (p:Persona {id: randomUUID(), nombre: $nombre, edad: $edad, ciudad: $ciudad})
@@ -39,6 +44,7 @@ def crear(datos: PersonaIn) -> dict[str, Any]:
 
 
 def actualizar(persona_id: str, cambios: PersonaUpdate) -> dict[str, Any]:
+    """Actualiza solo los campos enviados."""
     filas = run_query(
         "MATCH (p:Persona {id: $id}) SET p += $cambios RETURN p.id AS id",
         id=persona_id,
@@ -50,6 +56,7 @@ def actualizar(persona_id: str, cambios: PersonaUpdate) -> dict[str, Any]:
 
 
 def agregar_interes(persona_id: str, interes: InteresIn) -> dict[str, Any]:
+    """MERGE del interés y de la relación, así repetirlo no duplica nada."""
     run_query(
         """
         MATCH (p:Persona {id: $id})
@@ -63,6 +70,7 @@ def agregar_interes(persona_id: str, interes: InteresIn) -> dict[str, Any]:
 
 
 def eliminar(persona_id: str) -> None:
+    """DETACH DELETE: borra la persona y sus relaciones. Los nodos Interes se conservan."""
     filas = run_query(
         "MATCH (p:Persona {id: $id}) DETACH DELETE p RETURN count(*) AS borradas", id=persona_id
     )

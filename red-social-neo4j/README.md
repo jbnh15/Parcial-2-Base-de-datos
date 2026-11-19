@@ -16,13 +16,13 @@ Las credenciales viven solo en `.env` (ignorado por git). La app falla al arranc
 
 ## Ejecución
 ```bash
-make seed    # crea constraints y carga datos de ejemplo (ficticios, idempotente)
+make seed    # aplica seed/schema.cypher y carga datos de ejemplo (ficticios, idempotente)
 make run     # http://127.0.0.1:5000
 ```
 Si la instancia Free estuvo inactiva, AuraDB la pausa: reactívala desde la consola antes de correr el seed.
 
 ## Datos de ejemplo
-`seed/seed.py` carga 14 personas y 17 amistades **inventadas para la demo**, repartidas en tres grupos de ciudades conectados por dos puentes. No son datos reales.
+`seed/schema.cypher` define las restricciones de unicidad (también se puede pegar en Neo4j Browser). `seed/seed.py` lo aplica y carga 14 personas y 17 amistades **inventadas para la demo**, repartidas en tres grupos de ciudades conectados por dos puentes. No son datos reales.
 
 ## Estructura
 ```
@@ -32,7 +32,7 @@ db/               driver único de Neo4j
 routes/           endpoints (solo HTTP)
 services/         lógica y todo el Cypher
 schemas/          validación de entrada con Pydantic
-seed/             constraints y datos iniciales
+seed/             schema.cypher (script de BD) y seed.py (datos iniciales)
 tests/            pytest, sin tocar la nube
 docs/api/         un archivo por recurso
 ```

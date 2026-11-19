@@ -1,3 +1,5 @@
+"""Endpoints de consultas de grafo y recomendaciones. Ver docs/api/recomendaciones.md."""
+
 from flask import Blueprint, jsonify, request
 from pydantic import TypeAdapter
 
@@ -17,21 +19,25 @@ def _limite() -> int:
 
 @bp.get("/personas/<persona_id>/sugerencias/amigos")
 def por_amigos(persona_id: str):
+    """GET .../sugerencias/amigos: amigos de amigos que aún no son amigos."""
     return jsonify(svc.sugerencias_por_amigos(persona_id, _limite()))
 
 
 @bp.get("/personas/<persona_id>/sugerencias/intereses")
 def por_intereses(persona_id: str):
+    """GET .../sugerencias/intereses: personas con intereses en común."""
     return jsonify(svc.sugerencias_por_intereses(persona_id, _limite()))
 
 
 @bp.get("/personas/<persona_id>/vecindad")
 def vecindad(persona_id: str):
+    """GET .../vecindad: personas a 1 y 2 saltos."""
     return jsonify(svc.vecindad(persona_id))
 
 
 @bp.get("/camino")
 def camino():
+    """GET /api/camino?desde=&hasta=: cadena de amistades más corta."""
     desde = _id_valido.validate_python(request.args.get("desde", ""))
     hasta = _id_valido.validate_python(request.args.get("hasta", ""))
     return jsonify(svc.camino_mas_corto(desde, hasta))
@@ -39,4 +45,5 @@ def camino():
 
 @bp.get("/populares")
 def populares():
+    """GET /api/populares: personas con más amigos."""
     return jsonify(svc.mas_conectadas(_limite()))

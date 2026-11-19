@@ -10,7 +10,9 @@ def test_persona_limpia_espacios_y_repetidos():
     assert p.intereses == ["Cine", "Música"]
 
 
-@pytest.mark.parametrize("campo,valor", [("edad", 5), ("edad", 200), ("nombre", "  "), ("ciudad", "")])
+@pytest.mark.parametrize(
+    "campo,valor", [("edad", 5), ("edad", 200), ("nombre", "  "), ("ciudad", "")]
+)
 def test_persona_rechaza_valores_invalidos(campo, valor):
     datos = {"nombre": "Ana", "edad": 20, "ciudad": "Mérida", campo: valor}
     with pytest.raises(ValidationError):

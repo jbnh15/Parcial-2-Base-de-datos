@@ -1,3 +1,5 @@
+"""Configuración desde variables de entorno (archivo .env). Nunca se escriben credenciales en el código."""
+
 import os
 from dataclasses import dataclass
 
@@ -6,6 +8,8 @@ from dotenv import load_dotenv
 
 @dataclass(frozen=True)
 class Settings:
+    """Credenciales de conexión a Neo4j AuraDB."""
+
     neo4j_uri: str
     neo4j_user: str
     neo4j_password: str
