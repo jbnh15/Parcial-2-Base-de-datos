@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Red social en grafo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Red social en grafo</h1>
+    <p>Flask + Neo4j AuraDB. Personas, amistades y recomendaciones con Cypher.</p>
+  </header>
+  <main>
+    <section>
+      <h2 id="titulo-form">Nueva persona</h2>
+      <form id="form-persona">
+        <input name="nombre" placeholder="Nombre" required maxlength="80">
+        <input name="edad" type="number" placeholder="Edad" min="13" max="120" required>
+        <input name="ciudad" placeholder="Ciudad" required maxlength="80">
+        <input name="intereses" placeholder="Intereses separados por coma">
+        <div class="fila">
+          <button type="submit" id="btn-guardar">Crear</button>
+          <button type="button" id="btn-cancelar" class="sec" hidden>Cancelar</button>
+        </div>
+      </form>
+
+      <h2>Nueva amistad</h2>
+      <form id="form-amistad">
+        <select name="persona_a_id" required></select>
+        <select name="persona_b_id" required></select>
+        <button type="submit">Conectar</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Personas</h2>
+      <table>
+        <thead><tr><th>Nombre</th><th>Edad</th><th>Ciudad</th><th>Intereses</th><th></th></tr></thead>
+        <tbody id="tabla-personas"></tbody>
+      </table>
+    </section>
+
+    <section class="ancho">
+      <h2>Consultas del grafo</h2>
+      <div class="fila">
+        <select id="sel-persona"></select>
+        <button data-q="amigos">Amigos</button>
+        <button data-q="sugerencias/amigos">Amigos de amigos</button>
+        <button data-q="sugerencias/intereses">Por intereses</button>
+        <button data-q="vecindad">Vecindad 2 saltos</button>
+      </div>
+      <div class="fila">
+        <select id="sel-destino"></select>
+        <button id="btn-camino">Camino más corto</button>
+        <button id="btn-populares">Más conectadas</button>
+      </div>
+      <p id="estado" role="status"></p>
+      <pre id="resultado">Elige una consulta.</pre>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

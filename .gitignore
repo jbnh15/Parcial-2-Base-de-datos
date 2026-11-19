@@ -1,0 +1,17 @@
+# Credenciales: nunca al repo
+.env
+.env.*
+!.env.example
+# Archivo que descarga AuraDB al crear la instancia (trae la contraseña)
+Neo4j-*.txt
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+
+# Editores y sistema
+.idea/
+.vscode/
+.DS_Store
