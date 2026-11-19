@@ -20,4 +20,4 @@ make seed               # aplica seed/schema.cypher y carga datos de ejemplo (fi
 make run                # http://127.0.0.1:5000
 ```
 
-Más detalle en `red-social-neo4j/README.md` y la documentación de la API en `red-social-neo4j/docs/api/`.
+La documentación de la API está en `red-social-neo4j/docs/api/`.
